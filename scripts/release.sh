@@ -111,7 +111,7 @@ get_commits_since_tag() {
         git log --pretty=format:"%s" --no-merges
     else
         # Get commits since tag
-        git log "${tag}..HEAD" --pretty=format:"%s" --no-merges
+        git log --pretty=format:"%s" --no-merges "${tag}..HEAD"
     fi
 }
 
