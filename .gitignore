@@ -4,7 +4,6 @@
 *.dll
 *.so
 *.dylib
-gitext
 
 # Test binary, built with `go test -c`
 *.test
@@ -14,6 +13,9 @@ gitext
 
 # Dependency directories
 vendor/
+
+# Build output
+build/
 
 # Go workspace file
 go.work
