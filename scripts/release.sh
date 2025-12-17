@@ -84,7 +84,7 @@ check_prerequisites() {
 
 # Get latest tag
 get_latest_tag() {
-    log_info "Finding latest release tag..."
+    log_info "Finding latest release tag..." >&2
     
     # Fetch tags from remote
     git fetch "$REMOTE" --tags --quiet 2>/dev/null || true
@@ -93,12 +93,12 @@ get_latest_tag() {
     latest_tag=$(git tag -l "v*" | sort -V | tail -1)
     
     if [ -z "$latest_tag" ]; then
-        log_warn "No previous tags found. Starting from v0.1.0"
+        log_warn "No previous tags found. Starting from v0.1.0" >&2
         echo "v0.1.0"
         return
     fi
     
-    log_info "Latest tag: $latest_tag"
+    log_info "Latest tag: $latest_tag" >&2
     echo "$latest_tag"
 }
 
@@ -120,7 +120,7 @@ calculate_next_version() {
     local current_tag="$1"
     local commits="$2"
     
-    log_info "Determining version bump type..."
+    log_info "Determining version bump type..." >&2
     
     # Extract version number (remove 'v' prefix)
     current_version="${current_tag#v}"
@@ -128,7 +128,7 @@ calculate_next_version() {
     # Get bump type using version-bump script
     bump_type=$("$SCRIPT_DIR/version-bump.sh" "$commits")
     
-    log_info "Version bump type: $bump_type"
+    log_info "Version bump type: $bump_type" >&2
     
     # Parse version components
     IFS='.' read -ra VERSION_PARTS <<< "$current_version"
@@ -151,13 +151,13 @@ calculate_next_version() {
             patch=$((patch + 1))
             ;;
         *)
-            log_error "Unknown bump type: $bump_type"
+            log_error "Unknown bump type: $bump_type" >&2
             exit 1
             ;;
     esac
     
     next_version="v${major}.${minor}.${patch}"
-    log_info "Next version: $next_version"
+    log_info "Next version: $next_version" >&2
     echo "$next_version"
 }
 
@@ -167,7 +167,7 @@ generate_changelog() {
     local commits="$2"
     local previous_version="$3"
     
-    log_info "Generating changelog..."
+    log_info "Generating changelog..." >&2
     
     changelog=$("$SCRIPT_DIR/changelog-generator.sh" "$version" "$commits" "$previous_version")
     echo "$changelog"
