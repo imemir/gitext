@@ -4,5 +4,6 @@ package commands
 type Options struct {
 	DryRun  bool
 	Verbose bool
+	Version string
 }
 

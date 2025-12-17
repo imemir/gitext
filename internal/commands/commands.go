@@ -16,6 +16,7 @@ func AddCommands(rootCmd *cobra.Command, opts *Options) {
 	rootCmd.AddCommand(NewCleanupCmd(opts))
 	rootCmd.AddCommand(NewCommitCmd(opts))
 	rootCmd.AddCommand(NewAICmd(opts))
+	rootCmd.AddCommand(NewSelfUpdateCmd(opts))
 	rootCmd.AddCommand(NewCompletionCmd())
 }
 

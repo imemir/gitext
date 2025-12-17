@@ -38,6 +38,7 @@ Build Time: %s`, Version, BuildTime),
 	commands.AddCommands(rootCmd, &commands.Options{
 		DryRun:  dryRun,
 		Verbose: verbose,
+		Version: Version,
 	})
 
 	if err := rootCmd.Execute(); err != nil {
