@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gitext/gitext/internal/commands"
@@ -12,13 +13,22 @@ var (
 	verbose bool
 )
 
+// Version and BuildTime are set during build via ldflags
+var (
+	Version   = "dev"
+	BuildTime = "unknown"
+)
+
 func main() {
 	rootCmd := &cobra.Command{
 		Use:   "gitext",
 		Short: "Safe git workflow automation for engineering teams",
-		Long: `gitext is a CLI tool that replaces manual git workflow steps with safe,
+		Long: fmt.Sprintf(`gitext is a CLI tool that replaces manual git workflow steps with safe,
 repeatable commands. It enforces branch protection rules and prevents
-accidental production contamination.`,
+accidental production contamination.
+
+Version: %s
+Build Time: %s`, Version, BuildTime),
 	}
 
 	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Show what would be done without executing")

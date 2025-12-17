@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.25'
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Build binaries
+        run: |
+          make build-all
+          ls -lh build/
+
+      - name: Generate release notes
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          REPO="imemir/gitext"
+          
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"%s" --no-merges)
+          else
+            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"%s" --no-merges)
+          fi
+          
+          echo "## [$VERSION] - $(date +%Y-%m-%d)" > /tmp/release_notes.md
+          echo "" >> /tmp/release_notes.md
+          
+          FEATURES=$(echo "$COMMITS" | grep -iE "^feat\(|^feat:" || true)
+          FIXES=$(echo "$COMMITS" | grep -iE "^fix\(|^fix:" || true)
+          BREAKING=$(echo "$COMMITS" | grep -iE "BREAKING|!:" || true)
+          DOCS=$(echo "$COMMITS" | grep -iE "^docs\(|^docs:" || true)
+          OTHER=$(echo "$COMMITS" | grep -vE "^feat\(|^feat:|^fix\(|^fix:|BREAKING|!:|^docs\(|^docs:" || true)
+          
+          if [ -n "$BREAKING" ]; then
+            echo "### BREAKING CHANGES" >> /tmp/release_notes.md
+            echo "$BREAKING" | sed 's/^/- /' >> /tmp/release_notes.md
+            echo "" >> /tmp/release_notes.md
+          fi
+          
+          if [ -n "$FEATURES" ]; then
+            echo "### Added" >> /tmp/release_notes.md
+            echo "$FEATURES" | sed 's/^feat(\([^)]*\)): /- \1: /' | sed 's/^feat: /- /' | sed 's/^/- /' >> /tmp/release_notes.md
+            echo "" >> /tmp/release_notes.md
+          fi
+          
+          if [ -n "$FIXES" ]; then
+            echo "### Fixed" >> /tmp/release_notes.md
+            echo "$FIXES" | sed 's/^fix(\([^)]*\)): /- \1: /' | sed 's/^fix: /- /' | sed 's/^/- /' >> /tmp/release_notes.md
+            echo "" >> /tmp/release_notes.md
+          fi
+          
+          if [ -n "$DOCS" ]; then
+            echo "### Documentation" >> /tmp/release_notes.md
+            echo "$DOCS" | sed 's/^docs(\([^)]*\)): /- \1: /' | sed 's/^docs: /- /' | sed 's/^/- /' >> /tmp/release_notes.md
+            echo "" >> /tmp/release_notes.md
+          fi
+          
+          if [ -n "$OTHER" ]; then
+            echo "### Changed" >> /tmp/release_notes.md
+            echo "$OTHER" | sed 's/^/- /' >> /tmp/release_notes.md
+            echo "" >> /tmp/release_notes.md
+          fi
+          
+          cat /tmp/release_notes.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.version }}
+          body_path: /tmp/release_notes.md
+          files: |
+            build/gitext-linux-amd64
+            build/gitext-linux-arm64
+            build/gitext-darwin-amd64
+            build/gitext-darwin-arm64
+            build/gitext-windows-amd64.exe
+            build/gitext-windows-arm64.exe
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update README
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          REPO="imemir/gitext"
+          
+          perl -i -pe "s|curl -L https://github.com/[^/]+/[^/]+/releases/latest/download|curl -L https://github.com/$REPO/releases/download/$VERSION|g" README.md
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --staged --quiet || git commit -m "docs: update installation instructions for $VERSION"
+          git push origin master || true

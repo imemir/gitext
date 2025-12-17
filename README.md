@@ -12,10 +12,52 @@ A safe git workflow automation CLI tool for engineering teams. `gitext` replaces
 
 ## Installation
 
+### Install Latest Release
+
+**Linux (amd64):**
+```bash
+curl -L https://github.com/imemir/gitext/releases/latest/download/gitext-linux-amd64 -o gitext
+chmod +x gitext
+sudo mv gitext /usr/local/bin/
+```
+
+**Linux (arm64):**
+```bash
+curl -L https://github.com/imemir/gitext/releases/latest/download/gitext-linux-arm64 -o gitext
+chmod +x gitext
+sudo mv gitext /usr/local/bin/
+```
+
+**macOS (amd64):**
+```bash
+curl -L https://github.com/imemir/gitext/releases/latest/download/gitext-darwin-amd64 -o gitext
+chmod +x gitext
+sudo mv gitext /usr/local/bin/
+```
+
+**macOS (arm64 / Apple Silicon):**
+```bash
+curl -L https://github.com/imemir/gitext/releases/latest/download/gitext-darwin-arm64 -o gitext
+chmod +x gitext
+sudo mv gitext /usr/local/bin/
+```
+
+**Windows (amd64):**
+```powershell
+Invoke-WebRequest -Uri https://github.com/imemir/gitext/releases/latest/download/gitext-windows-amd64.exe -OutFile gitext.exe
+# Add to PATH or move to desired location
+```
+
+**Windows (arm64):**
+```powershell
+Invoke-WebRequest -Uri https://github.com/imemir/gitext/releases/latest/download/gitext-windows-arm64.exe -OutFile gitext.exe
+# Add to PATH or move to desired location
+```
+
 ### Build from source
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/imemir/gitext.git
 cd gitext
 go build -o gitext ./cmd/gitext
 sudo mv gitext /usr/local/bin/
@@ -356,6 +398,35 @@ Add the remote:
 ```bash
 git remote add origin <repository-url>
 ```
+
+## Releasing
+
+To create a new release:
+
+1. Make sure you're on the `master` branch with a clean working tree
+2. Run `make release` to:
+   - Analyze changes since the last release
+   - Determine the next version (patch/minor/major)
+   - Generate changelog (using AI if OpenRouter API key is configured)
+   - Build binaries for all platforms
+   - Create and push a git tag
+3. GitHub Actions will automatically:
+   - Create a GitHub release
+   - Upload binaries as release assets
+   - Update README with installation instructions
+
+For a dry run (without creating tags or pushing):
+```bash
+make release-dry-run
+```
+
+### Configuration
+
+Create a `.env` file (see `.env.example`) to enable AI-powered changelog generation:
+- `OPENROUTER_API_KEY`: Your OpenRouter API key for AI analysis
+- `GITHUB_TOKEN`: Optional, for local release creation
+- `GIT_REMOTE`: Git remote name (default: origin)
+- `GIT_BRANCH`: Git branch name (default: master)
 
 ## Contributing
 

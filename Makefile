@@ -1,4 +1,4 @@
-.PHONY: build build-all clean help
+.PHONY: build build-all clean help release release-dry-run version
 
 # Binary name
 BINARY_NAME=gitext
@@ -15,10 +15,13 @@ OSES=linux darwin windows
 
 help: ## Show help message
 	@echo "Available commands:"
-	@echo "  make build-all    - Build for all architectures and operating systems"
-	@echo "  make build        - Build for current platform"
-	@echo "  make clean        - Clean build directory"
-	@echo "  make help         - Show this help message"
+	@echo "  make build-all       - Build for all architectures and operating systems"
+	@echo "  make build           - Build for current platform"
+	@echo "  make clean           - Clean build directory"
+	@echo "  make release         - Create a new release (analyzes changes, bumps version, creates tag)"
+	@echo "  make release-dry-run - Dry run of release process"
+	@echo "  make version         - Show current version"
+	@echo "  make help            - Show this help message"
 
 build: ## Build for current platform
 	@echo "Building for current platform..."
@@ -40,3 +43,14 @@ clean: ## Clean build directory
 	@echo "Cleaning build directory..."
 	@rm -rf $(BUILD_DIR)
 	@echo "Clean complete!"
+
+version: ## Show current version
+	@echo "Current version: $(VERSION)"
+
+release: ## Create a new release
+	@echo "Starting release process..."
+	@./scripts/release.sh
+
+release-dry-run: ## Dry run of release process
+	@echo "Starting release process (dry run)..."
+	@DRY_RUN=true ./scripts/release.sh --dry-run
