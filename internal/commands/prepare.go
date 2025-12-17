@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gitext/gitext/pkg/config"
-	"github.com/gitext/gitext/pkg/git"
-	"github.com/gitext/gitext/pkg/ui"
+	"github.com/imemir/gitext/pkg/config"
+	"github.com/imemir/gitext/pkg/git"
+	"github.com/imemir/gitext/pkg/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -201,4 +201,3 @@ func getCommitSummary(remote, targetBranch string, g *git.Git) (string, error) {
 
 	return summary.String(), nil
 }
-

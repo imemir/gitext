@@ -74,7 +74,7 @@ Respond with ONLY one word: patch, minor, or major"
     local response=$(curl -s -X POST https://openrouter.ai/api/v1/chat/completions \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $api_key" \
-        -H "HTTP-Referer: https://github.com/gitext/gitext" \
+        -H "HTTP-Referer: https://github.com/imemir/gitext" \
         -H "X-Title: gitext release automation" \
         -d "{
             \"model\": \"$model\",

@@ -1,4 +1,4 @@
-module github.com/gitext/gitext
+module github.com/imemir/gitext
 
 go 1.25
 

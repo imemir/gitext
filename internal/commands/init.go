@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gitext/gitext/pkg/config"
-	"github.com/gitext/gitext/pkg/ui"
+	"github.com/imemir/gitext/pkg/config"
+	"github.com/imemir/gitext/pkg/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -111,4 +111,3 @@ done
 exit 0
 `, cfg.Branch.Production, cfg.Branch.Stage)
 }
-

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gitext/gitext/internal/commands"
+	"github.com/imemir/gitext/internal/commands"
 	"github.com/spf13/cobra"
 )
 
@@ -45,4 +45,3 @@ Build Time: %s`, Version, BuildTime),
 		os.Exit(1)
 	}
 }
-

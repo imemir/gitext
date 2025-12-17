@@ -3,9 +3,9 @@ package commands
 import (
 	"fmt"
 
-	"github.com/gitext/gitext/pkg/config"
-	"github.com/gitext/gitext/pkg/git"
-	"github.com/gitext/gitext/pkg/ui"
+	"github.com/imemir/gitext/pkg/config"
+	"github.com/imemir/gitext/pkg/git"
+	"github.com/imemir/gitext/pkg/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -131,4 +131,3 @@ working tree state, and suggest the next recommended command.`,
 
 	return cmd
 }
-

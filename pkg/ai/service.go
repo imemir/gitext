@@ -3,7 +3,7 @@ package ai
 import (
 	"fmt"
 
-	"github.com/gitext/gitext/pkg/aiconfig"
+	"github.com/imemir/gitext/pkg/aiconfig"
 )
 
 // Service manages AI providers and generates commit messages

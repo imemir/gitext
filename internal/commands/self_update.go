@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gitext/gitext/pkg/ui"
+	"github.com/imemir/gitext/pkg/ui"
 	"github.com/spf13/cobra"
 )
 

@@ -3,9 +3,9 @@ package commands
 import (
 	"fmt"
 
-	"github.com/gitext/gitext/pkg/ai"
-	"github.com/gitext/gitext/pkg/aiconfig"
-	"github.com/gitext/gitext/pkg/ui"
+	"github.com/imemir/gitext/pkg/ai"
+	"github.com/imemir/gitext/pkg/aiconfig"
+	"github.com/imemir/gitext/pkg/ui"
 	"github.com/spf13/cobra"
 )
 

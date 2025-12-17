@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	openRouterAPIURL = "https://openrouter.ai/api/v1/chat/completions"
+	openRouterAPIURL  = "https://openrouter.ai/api/v1/chat/completions"
 	openRouterTimeout = 30 * time.Second
 )
 
@@ -38,10 +38,10 @@ var FreeModels = []Model{
 
 // OpenRouterProvider implements the Provider interface for OpenRouter
 type OpenRouterProvider struct {
-	apiKey      string
-	model       string
+	apiKey       string
+	model        string
 	useFreeModel bool
-	client      *http.Client
+	client       *http.Client
 }
 
 // NewOpenRouterProvider creates a new OpenRouter provider
@@ -96,7 +96,7 @@ Generate ONLY the commit message header (type(scope): description), nothing else
 			},
 		},
 		"temperature": 0.7,
-		"max_tokens": 100,
+		"max_tokens":  100,
 	}
 
 	jsonData, err := json.Marshal(requestBody)
@@ -111,7 +111,7 @@ Generate ONLY the commit message header (type(scope): description), nothing else
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
-	req.Header.Set("HTTP-Referer", "https://github.com/gitext/gitext")
+	req.Header.Set("HTTP-Referer", "https://github.com/imemir/gitext")
 	req.Header.Set("X-Title", "gitext")
 
 	resp, err := p.client.Do(req)
