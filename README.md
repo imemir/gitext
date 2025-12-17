@@ -27,6 +27,34 @@ sudo mv gitext /usr/local/bin/
 gitext --help
 ```
 
+### Shell Completion
+
+gitext supports shell completion for bash, zsh, fish, and PowerShell.
+
+**Bash:**
+```bash
+source <(gitext completion bash)
+# Add to ~/.bashrc or ~/.bash_profile for persistence
+```
+
+**Zsh:**
+```bash
+source <(gitext completion zsh)
+# Add to ~/.zshrc for persistence
+```
+
+**Fish:**
+```bash
+gitext completion fish | source
+# Add to ~/.config/fish/config.fish for persistence
+```
+
+**PowerShell:**
+```powershell
+gitext completion powershell | Out-String | Invoke-Expression
+# Add to your PowerShell profile for persistence
+```
+
 ## Quick Start
 
 1. **Initialize gitext in your repository:**
@@ -196,6 +224,19 @@ gitext cleanup [--hard]
 - Dry-run by default (shows what would be deleted)
 - `--hard`: Actually delete branches
 - Skips protected branches (stage/production)
+
+### `gitext completion`
+
+Generate shell completion scripts for bash, zsh, fish, or PowerShell.
+
+```bash
+gitext completion bash
+gitext completion zsh
+gitext completion fish
+gitext completion powershell
+```
+
+See the [Shell Completion](#shell-completion) section for installation instructions.
 
 ## Example Workflows
 

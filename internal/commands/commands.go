@@ -14,5 +14,6 @@ func AddCommands(rootCmd *cobra.Command, opts *Options) {
 	rootCmd.AddCommand(NewRetargetCmd(opts))
 	rootCmd.AddCommand(NewPrepareCmd(opts))
 	rootCmd.AddCommand(NewCleanupCmd(opts))
+	rootCmd.AddCommand(NewCompletionCmd())
 }
 
