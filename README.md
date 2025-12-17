@@ -399,35 +399,6 @@ Add the remote:
 git remote add origin <repository-url>
 ```
 
-## Releasing
-
-To create a new release:
-
-1. Make sure you're on the `master` branch with a clean working tree
-2. Run `make release` to:
-   - Analyze changes since the last release
-   - Determine the next version (patch/minor/major)
-   - Generate changelog (using AI if OpenRouter API key is configured)
-   - Build binaries for all platforms
-   - Create and push a git tag
-3. GitHub Actions will automatically:
-   - Create a GitHub release
-   - Upload binaries as release assets
-   - Update README with installation instructions
-
-For a dry run (without creating tags or pushing):
-```bash
-make release-dry-run
-```
-
-### Configuration
-
-Create a `.env` file (see `.env.example`) to enable AI-powered changelog generation:
-- `OPENROUTER_API_KEY`: Your OpenRouter API key for AI analysis
-- `GITHUB_TOKEN`: Optional, for local release creation
-- `GIT_REMOTE`: Git remote name (default: origin)
-- `GIT_BRANCH`: Git branch name (default: master)
-
 ## Contributing
 
 Contributions are welcome! Please ensure all tests pass and follow the existing code style.
