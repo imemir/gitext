@@ -152,6 +152,26 @@ func (g *Git) IsDetachedHEAD() (bool, error) {
 	return strings.TrimSpace(output) == "", nil
 }
 
+// GetStagedDiff returns the diff of staged changes
+func (g *Git) GetStagedDiff() (string, error) {
+	output, err := g.RunWithTimeout("diff", "--cached")
+	if err != nil {
+		return "", err
+	}
+	return output, nil
+}
+
+// HasStagedChanges checks if there are any staged changes
+func (g *Git) HasStagedChanges() (bool, error) {
+	_, err := g.RunWithTimeout("diff", "--cached", "--quiet")
+	if err != nil {
+		// If command fails, there are staged changes
+		return true, nil
+	}
+	// If command succeeds, there are no staged changes
+	return false, nil
+}
+
 // parseInt parses an integer from a string
 func parseInt(s string) (int, error) {
 	var n int

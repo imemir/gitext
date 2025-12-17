@@ -9,6 +9,7 @@ A safe git workflow automation CLI tool for engineering teams. `gitext` replaces
 - **Branch protection**: Pre-push hooks prevent direct pushes to protected branches
 - **CI integration**: Run configured CI checks before creating PRs
 - **Smart suggestions**: Commands suggest next steps based on current state
+- **AI-powered commit messages**: Generate commit messages automatically using AI (OpenAI or OpenRouter) following Conventional Commits specification
 
 ## Installation
 
@@ -119,6 +120,14 @@ gitext status
 gitext start feature --ticket KWS-123 --slug retry-policy --from stage
 ```
 
+4. **Optional: Setup AI for commit messages:**
+
+```bash
+gitext ai setup
+```
+
+After setup, you can use `gitext commit` instead of `git commit` to automatically generate commit messages.
+
 ## Configuration
 
 The `.gitext` file is a YAML configuration file placed in your repository root. Here's an example:
@@ -157,6 +166,28 @@ remote:
 - **ci.production**: Array of shell commands to run before PRs to production
 - **pr.templatePath**: Optional path to PR template file (relative to repo root)
 - **remote.name**: Git remote name (default: "origin")
+
+### AI Configuration
+
+AI configuration is stored in `~/.gitext/config.yaml` (global configuration, not per-repository). This file is created automatically when you run `gitext ai setup`.
+
+**Example configuration:**
+
+```yaml
+provider: openai  # or "openrouter"
+openai:
+  api_key: sk-...
+  model: gpt-4o
+openrouter:
+  api_key: sk-...
+  model: google/gemini-flash-1.5-8b
+  use_free_model: true
+```
+
+**Security:**
+- The config file is created with permissions `0600` (read/write for owner only)
+- API keys are masked when displayed (`gitext ai config`)
+- You can reconfigure anytime with `gitext ai setup`
 
 ## Commands
 
@@ -280,6 +311,95 @@ gitext completion powershell
 
 See the [Shell Completion](#shell-completion) section for installation instructions.
 
+## AI Commands
+
+gitext includes AI-powered features for generating commit messages automatically. The AI analyzes your code changes and generates commit messages following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+
+### Setup AI Provider
+
+Before using AI features, you need to configure an AI provider:
+
+```bash
+gitext ai setup
+```
+
+This interactive command will:
+1. Let you choose between OpenAI or OpenRouter
+2. Prompt for your API key (input is hidden)
+3. Let you select a model
+4. Test the connection
+5. Save configuration to `~/.gitext/config.yaml`
+
+**OpenAI Options:**
+- `gpt-4o` (default - recommended)
+- `gpt-4o-mini` (faster, cheaper)
+- `gpt-4-turbo`
+- `gpt-3.5-turbo` (cheapest)
+- Custom model
+
+**OpenRouter Options:**
+- Free models: `google/gemini-flash-1.5-8b`, `qwen/qwen-2.5-7b-instruct`, `mistralai/mistral-7b-instruct-v0.2`
+- Custom model (any model supported by OpenRouter)
+
+### `gitext ai config`
+
+View your current AI configuration or test the connection.
+
+```bash
+# View configuration
+gitext ai config
+
+# Test connection
+gitext ai config --test
+```
+
+Displays:
+- Current provider (OpenAI or OpenRouter)
+- Masked API key (for security)
+- Selected model
+- Configuration file path
+
+### `gitext commit`
+
+Generate a commit message using AI and create the commit.
+
+```bash
+# Stage your changes first
+git add .
+
+# Generate commit message with AI and commit
+gitext commit
+
+# Use a custom message instead
+gitext commit --message "fix: custom commit message"
+```
+
+**How it works:**
+1. Checks for staged changes
+2. Gets the diff of staged changes
+3. Sends diff to AI provider
+4. Generates commit message following Conventional Commits format
+5. Shows the generated message and asks for confirmation
+6. Creates the commit if confirmed
+
+**Example output:**
+```
+→ Getting staged changes
+→ Generating commit message with AI...
+✓ Generated commit message:
+
+  feat(auth): add password reset functionality
+
+Create commit with this message? [Y/n]: y
+→ Creating commit
+✓ Commit created successfully
+```
+
+**Note:** The AI analyzes your code changes and generates messages in the format `type(scope): description` where:
+- `type`: feat, fix, docs, style, refactor, perf, test, chore, etc.
+- `scope`: optional, the area affected (e.g., auth, api, ui)
+- `description`: brief summary in imperative mood
+
 ## Example Workflows
 
 ### Staging-First Workflow
@@ -290,8 +410,14 @@ See the [Shell Completion](#shell-completion) section for installation instructi
 gitext start feature --ticket KWS-123 --slug new-feature --from stage
 ```
 
-2. **Make changes and commit:**
+2. **Make changes and commit with AI:**
 
+```bash
+git add .
+gitext commit
+```
+
+Or use traditional git commit:
 ```bash
 git add .
 git commit -m "Add new feature"
@@ -329,8 +455,14 @@ gitext prepare pr --to production
 gitext start feature --ticket HOTFIX-456 --slug critical-fix --from production
 ```
 
-2. **Make fix and commit:**
+2. **Make fix and commit with AI:**
 
+```bash
+git add .
+gitext commit
+```
+
+Or use traditional git commit:
 ```bash
 git add .
 git commit -m "Fix critical issue"
@@ -398,6 +530,29 @@ Add the remote:
 ```bash
 git remote add origin <repository-url>
 ```
+
+### "AI configuration not found"
+
+Set up AI provider first:
+
+```bash
+gitext ai setup
+```
+
+### "Failed to generate commit message"
+
+Possible causes:
+- Invalid API key: Run `gitext ai config --test` to verify
+- Network issues: Check your internet connection
+- API rate limits: Wait a moment and try again
+- No staged changes: Stage your changes with `git add` first
+
+### "Connection test failed"
+
+- Verify your API key is correct
+- Check if you have sufficient API credits/quota
+- For OpenRouter: Ensure the model name is correct
+- Try running `gitext ai setup` again to reconfigure
 
 ## Contributing
 
