@@ -434,5 +434,5 @@ Contributions are welcome! Please ensure all tests pass and follow the existing 
 
 ## License
 
-[Add your license here]
+MIT License - see [LICENSE](LICENSE) file for details.
 
